@@ -6,7 +6,7 @@ apply plugin: 'com.android.application'
 
 //获取打包时间
 def releaseTime() {
-    return new Date().format("yyyyMMdd", TimeZone.getTimeZone("UTC"))
+    return new Date().format("yyyyMMdd HH:mm:ss", TimeZone.getTimeZone("GMT+08"))
 }
 
 //这个闭包主要为了配置项目构建的各种属性：
