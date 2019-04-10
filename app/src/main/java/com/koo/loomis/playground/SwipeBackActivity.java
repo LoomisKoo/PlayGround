@@ -6,7 +6,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.MotionEvent;
 
-import com.koo.loomis.othertest.R;
 
 import cn.simonlee.widget.swipeback.SwipeBackHelper;
 

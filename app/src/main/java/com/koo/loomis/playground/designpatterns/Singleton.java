@@ -17,10 +17,11 @@ public class Singleton {
 
     //将默认的构造函数私有化，防止其他类手动new
     private Singleton() {
-        System.out.println("new Singleton()");
+        System.out.println("----------koo  new Singleton()");
     }
 
     public static Singleton getInstance() {
+        System.out.println("----------koo  getInstance");
         if (instance == null) {
             synchronized (Singleton.class) {
                 if (instance == null) {

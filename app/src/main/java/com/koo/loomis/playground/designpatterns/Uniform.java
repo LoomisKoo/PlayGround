@@ -1,6 +1,5 @@
 package com.koo.loomis.playground.designpatterns;
 
-import com.koo.loomis.othertest.designpatterns.bridge.Clothes;
 import com.koo.loomis.playground.designpatterns.bridge.Clothes;
 
 /**

@@ -7,8 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-import com.koo.loomis.othertest.R;
-import com.koo.loomis.othertest.util.TestDesignPatternsUtil;
 import com.koo.loomis.playground.util.TestDesignPatternsUtil;
 
 import cn.simonlee.widget.swipeback.SwipeBackHelper;
