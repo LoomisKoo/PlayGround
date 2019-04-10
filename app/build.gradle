@@ -36,17 +36,17 @@ android {
     signingConfigs {
         // 线上环境
         release {
-            keyAlias 'test'
-            keyPassword '123456'
-            storeFile file('test.keystore')
-            storePassword '123456'
+            keyAlias 'key'
+            keyPassword '111111'
+            storeFile file('keystore.jks')
+            storePassword '111111'
         }
         // 开发环境
         debug {
-            keyAlias 'test'
-            keyPassword '123456'
-            storeFile file('test.keystore')
-            storePassword '123456'
+            keyAlias 'key'
+            keyPassword '111111'
+            storeFile file('keystore.jks')
+            storePassword '111111'
         }
     }
 
@@ -192,7 +192,7 @@ android {
             if (variant.buildType.name == 'release') {
                 outputFileName = rootProject.getName() + "_v" + defaultConfig.versionName + "_" + productFlavors[0].name + "_" + buildType.name + ".apk"
             } else {
-                outputFileName = rootProject.getName() + "_v" + defaultConfig.versionName + "_" + productFlavors[0].name + "_" + buildType.name + "-${releaseTime()}.apk"
+                outputFileName = rootProject.getName() + "_v" + defaultConfig.versionName + "_" + productFlavors[0].name + "_" + buildType.name + "_${releaseTime()}.apk"
             }
         }
     }
