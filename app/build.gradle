@@ -18,7 +18,7 @@ android {
         //项目的包名
         applicationId "com.koo.loomis.playground"
         //指定项目最低兼容的版本，如果设备小于这个版本或者大于maxSdkVersion(一般不用)将无法安装这个应用。
-        minSdkVersion 19
+        minSdkVersion 21
         //指定项目的目标版本，表示在该目标版本上已经做过充分测试，系统会为该应用启动一些对应该目标系统的最新功能特性，
         //Android系统平台的行为变更，只有targetSdkVersion的属性值被设置为大于或等于该系统平台的API版本时，才会生效。
         //例如，若指定targetSdkVersion值为22，则表示该程序最高只在Android5.1版本上做过充分测试，在Android6.0系统上（对应targetSdkVersion为23）
@@ -29,7 +29,22 @@ android {
         //表示版本名称，展示在应用市场上。
         versionName "1.0"
         //表明要使用AndroidJUnitRunner进行单元测试
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        flavorDimensions "dev"
+        javaCompileOptions { annotationProcessorOptions { includeCompileClasspath = true } }
+
+
+        configurations {
+            all*.exclude group: 'com.google.common.util.concurrent.ListenableFuture'
+        }
+    }
+
+    compileOptions {
+
+        sourceCompatibility JavaVersion.VERSION_1_8
+
+        targetCompatibility JavaVersion.VERSION_1_8
+
     }
 
     //自动化打包配置
@@ -38,14 +53,14 @@ android {
         release {
             keyAlias 'key'
             keyPassword '111111'
-            storeFile file('keystore.jks')
+            storeFile file('/Applications/work/Android/StudioProject/PlayGround/app/keyStore.jks')
             storePassword '111111'
         }
         // 开发环境
         debug {
             keyAlias 'key'
             keyPassword '111111'
-            storeFile file('keystore.jks')
+            storeFile file('/Applications/work/Android/StudioProject/PlayGround/app/keyStore.jks')
             storePassword '111111'
         }
     }
@@ -78,7 +93,7 @@ android {
             //是否对APK包执行ZIP对齐优化，减小zip体积，增加运行效率
             zipAlignEnabled true
             //在applicationId 中添加了一个后缀，一般使用的不多
-            applicationIdSuffix 'palyGround'
+            applicationIdSuffix ''
             //在versionName 中添加了一个后缀，一般使用的不多
             versionNameSuffix "palyGround"
             //表示渲染等级，默认是3。
@@ -107,87 +122,92 @@ android {
             //是否在APK中生成伪语言环境，帮助国际化的东西，一般使用的不多
             pseudoLocalesEnabled false
             //在applicationId 中添加了一个后缀，一般使用的不多
-            applicationIdSuffix 'palyGround'
+            applicationIdSuffix ''
             //在versionName 中添加了一个后缀，一般使用的不多
             versionNameSuffix 'palyGround'
         }
     }
 
-    //目录指向配置
-    //配置 jniLibs.srcDirs = ['libs']，可以在Android studio的Android视图下生成jniLibs文件夹，
-    //可以方便我们存放jar包和库文件
+    // 目录指向配置
+    // 配置 jniLibs.srcDirs = ['libs']，可以在Android studio的Android视图下生成jniLibs文件夹，
+    // 可以方便我们存放jar包和库文件
     sourceSets {
         main {
             //指定lib库目录
             jniLibs.srcDirs = ['libs']
         }
     }
+
     //打包时的相关配置
     packagingOptions {
-        //pickFirsts做用是 当有重复文件时 打包会报错 这样配置会使用第一个匹配的文件打包进入apk
+        // pickFirsts作用是 当有重复文件时 打包会报错 这样配置会使用第一个匹配的文件打包进入apk
         // 表示当apk中有重复的META-INF目录下有重复的LICENSE文件时  只用第一个 这样打包就不会报错
         pickFirsts = ['META-INF/LICENSE']
 
         // 当出现重复文件时 合并重复的文件 然后打包入apk
-        //这个是有默认值得 merges = [] 这样会把默默认值去掉  所以我们用下面这种方式 在默认值后添加
+        // 这个是有默认值得 merges = [] 这样会把默默认值去掉  所以我们用下面这种方式 在默认值后添加
         merge 'META-INF/LICENSE'
 
-        //这个是在同时使用butterknife、dagger2做的一个处理。同理，遇到类似的问题，只要根据gradle的提示，做类似处理即可。
+        // 这个是在同时使用butterknife、dagger2做的一个处理。同理，遇到类似的问题，只要根据gradle的提示，做类似处理即可。
         exclude 'META-INF/services/javax.annotation.processing.Processor'
     }
 
-    //多个渠道配置
-    //这个配置是经常会使用到的，通常在适配多个渠道的时候，需要为特定的渠道做部分特殊的处理，比如设置不同的包名、应用名等。
-    //场景：当我们使用友盟统计时，通常需要设置一个渠道ID，那么我们就可以利用productFlavors来生成对应渠道信息的包
+    // 多个渠道配置
+    // 这个配置是经常会使用到的，通常在适配多个渠道的时候，需要为特定的渠道做部分特殊的处理，比如设置不同的包名、应用名等。
+    // 场景：当我们使用友盟统计时，通常需要设置一个渠道ID，那么我们就可以利用productFlavors来生成对应渠道信息的包
 
-    //    配置完之后，在命令行窗口中（Terminal）中输入gradlew assembleRelease（windows）即可开始打包，在Mac系统中对应指令应该是./gradlew assembleRelease。当然，如果想要debug版本的包，将指令中assembleRelease改为assembleDebug即可。最后生成的包还是在app/build/outputs/apk中，默认命名格式如app-wandoujia-release-unsigned.apk，在module的Build Variants中可以选择相应的渠道。
+    //    配置完之后，在命令行窗口中（Terminal）中输入gradlew assembleRelease（windows）即可开始打包，
+    //    在Mac系统中对应指令应该是./gradlew assembleRelease。当然，如果想要debug版本的包，将指令中assembleRelease改为assembleDebug即可。
+    //    最后生成的包还是在app/build/outputs/apk中，默认命名格式如app-wandoujia-release-unsigned.apk，在module的Build Variants中可以选择相应的渠道。
     //    注：Android Studio3.0需在主app的build.gradle里面的
     //    defaultConfig {
     //        targetSdkVersion：***
     //        minSdkVersion ：***
     //        versionCode：***
     //        versionName ：***
-    ////版本名后面添加一句话，意思就是flavor dimension 它的维度就是该版本号，这样维度就是都是统一的了
+    //        // 版本名后面添加一句话，意思就是flavor dimension 它的维度就是该版本号，这样维度就是都是统一的了
     //        flavorDimensions "versionCode"
     //    }
-
-
-    flavorDimensions "color"
     productFlavors {
         wandoujia {
-            //豌豆荚渠道包配置
+            // 豌豆荚渠道包配置
             manifestPlaceholders = [UMENG_CHANNEL_VALUE: "wandoujia"]
-            //配置包名
+            // 配置包名
             applicationId "com.koo.loomis.playground.wandoujia"
-            //manifestPlaceholders的使用在后续章节（AndroidManifest里的占位符）中介绍
-            dimension "color"
+            //版本名与默认的一致，可不配置
+            versionName defaultConfig.versionName
+            dimension "dev"
         }
         xiaomi {
             manifestPlaceholders = [UMENG_CHANNEL_VALUE: "xiaomi"]
-            //配置包名
+            // 配置包名
             applicationId "com.koo.loomis.playground.xiaomi"
-            dimension "color"
+            //版本名与默认的一致，可不配置
+            versionName defaultConfig.versionName
+            dimension "dev"
 
         }
         tencent {
             manifestPlaceholders = [UMENG_CHANNEL_VALUE: "tencent"]
             //配置包名
             applicationId "com.koo.loomis.playground.tencent"
-            dimension "color"
+            //版本名与默认的一致，可不配置
+            versionName defaultConfig.versionName
+            dimension "dev"
         }
     }
 
-    //程序在编译的时候会检查lint，有任何错误提示会停止build，我们可以关闭这个开关
+    // 程序在编译的时候会检查lint，有任何错误提示会停止build，我们可以关闭这个开关
     lintOptions {
         //即使报错也不会停止打包
         abortOnError false
         //打包release版本的时候进行检测
         checkReleaseBuilds false
     }
-    //在apk文件后边生成版本号信息
+
+    // 在apk文件后边生成版本号信息
     applicationVariants.all { variant ->
         //批量修改Apk名字
-
         variant.outputs.all { output ->
             if (variant.buildType.name == 'release') {
                 outputFileName = rootProject.getName() + "_v" + defaultConfig.versionName + "_" + productFlavors[0].name + "_" + buildType.name + ".apk"
@@ -196,6 +216,11 @@ android {
             }
         }
     }
+}
+
+configurations {
+//这里要排除到这个包，这个包会与 com.google.guava 冲突，导致编译不过
+    all*.exclude group: 'com.google.guava', module: 'listenablefuture'
 }
 
 //该闭包定义了项目的依赖关系，一般项目都有三种依赖方式：
@@ -212,7 +237,7 @@ android {
 dependencies {
     // 本地jar包依赖
     // 一个本地依赖声明，表示将libs目录下所有.jar后缀的文件都添加到项目的构建路径当中。
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     // 声明测试用例库
     testImplementation 'junit:junit:4.12'
     // 远程依赖
@@ -222,10 +247,16 @@ dependencies {
     // 27.1.1为版本号，用于区分同一个库的不同版本。
     // 加上这句声明后，Gradle在构建项目时会先检查一下本地是否已经缓存过该库，
     // 若没有缓存则自动联网下载，下载后自动添加到项目的构建路径中去。
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+//    implementation 'androidx.appcompat:appcompat:1.1.0-alpha04'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha4'
+//    androidTestImplementation 'androidx.test:runner:1.2.0-alpha03'
+//    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-alpha03'
     implementation 'cn.simonlee.widget:swipeback:1.0.14'
     implementation 'org.jetbrains:annotations-java5:15.0'
+    //基础库
+    implementation 'com.github.LoomisKoo:BaseLibrary:1.1.1'
+
+    implementation 'com.github.LoomisKoo:banner:1.0.5'
+
+//    implementation 'com.google.android.material:material:1.1.0-alpha05'
 }
